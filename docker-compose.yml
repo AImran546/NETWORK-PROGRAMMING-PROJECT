@@ -1,0 +1,49 @@
+version: '3'
+services:
+  device1:
+    build: .
+    container_name: device1
+    hostname: device1
+    networks:
+      labnet:
+        ipv4_address: 172.20.0.11
+    ports:
+      - "2221:22"
+healthcheck:
+      test: ["CMD", "service", "ssh", "status"]
+      interval: 30s
+
+  device2:
+    build: .
+    container_name: device2
+    hostname: device2
+    networks:
+      labnet:
+        ipv4_address: 172.20.0.12
+    ports:
+      - "2222:22"
+healthcheck:
+      test: ["CMD", "service", "ssh", "status"]
+      interval: 30s
+
+
+  device3:
+    build: .
+    container_name: device3
+    hostname: device3
+    networks:
+      labnet:
+        ipv4_address: 172.20.0.13
+    ports:
+      - "2223:22"
+
+networks:
+  labnet:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/24
+
+healthcheck:
+      test: ["CMD", "service", "ssh", "status"]
+      interval: 30s
