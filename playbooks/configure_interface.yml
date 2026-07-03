@@ -1,0 +1,17 @@
+---
+- name: Configure interface description
+  hosts: devices
+  become: yes
+  tasks:
+    - name: Write description file
+      copy:
+        content: "Interface eth0 - LabNet Uplink 172.20.0.0/24"
+        dest: /etc/interface_description.txt
+    - name: Set interface alias
+      shell: ip link set eth0 alias "LabNet-Uplink"
+      ignore_errors: yes
+    - name: Show
+      shell: cat /etc/interface_description.txt && ip link show eth0
+      register: i
+    - debug:
+        var: i.stdout_lines

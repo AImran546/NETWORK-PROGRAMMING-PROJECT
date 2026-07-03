@@ -1,0 +1,12 @@
+---
+- name: Configure static route
+  hosts: devices
+  become: yes
+  tasks:
+    - name: Add static route
+      shell: ip route add 10.10.10.0/24 via 172.20.0.1 dev eth0 || true
+    - name: Show routes
+      shell: ip route
+      register: r
+    - debug:
+        var: r.stdout_lines
