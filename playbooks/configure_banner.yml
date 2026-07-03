@@ -1,0 +1,24 @@
+---
+- name: Configure banner message
+  hosts: devices
+  become: yes
+  tasks:
+    - name: Set MOTD banner
+      copy:
+        content: |
+          ***********************************************
+          *  SECR3253 Network Automation Lab            *
+          *  Authorized Access Only                     *
+          *  All activities are monitored               *
+          ***********************************************
+        dest: /etc/motd
+        mode: '0644'
+
+    - name: Verify banner
+      shell: cat /etc/motd
+      register: banner_check
+
+    - name: Display banner
+      debug:
+        var: banner_check.stdout_lines
+
