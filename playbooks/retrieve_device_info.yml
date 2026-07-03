@@ -1,0 +1,16 @@
+---
+- name: Retrieve device info
+  hosts: devices
+  become: yes
+  gather_facts: yes
+  tasks:
+    - debug: {var: ansible_hostname}
+    - debug: {var: ansible_distribution}
+    - debug: {var: ansible_kernel}
+    - debug: {var: ansible_all_ipv4_addresses}
+    - shell: ip -brief addr show
+      register: iface
+    - debug: {var: iface.stdout_lines}
+    - shell: ip route
+      register: routes
+    - debug: {var: routes.stdout_lines}
