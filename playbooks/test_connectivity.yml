@@ -1,0 +1,12 @@
+---
+- name: Test connectivity
+  hosts: devices
+  gather_facts: no
+  tasks:
+    - ping:
+    - shell: echo "Connected to {{ inventory_hostname }}"
+      register: c
+    - debug: {var: c.stdout}
+    - shell: uptime
+      register: u
+    - debug: {var: u.stdout}
