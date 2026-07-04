@@ -1,0 +1,11 @@
+#!/bin/bash
+echo "=== Preflight checks ==="
+command -v docker >/dev/null && echo "[OK] docker" || echo "[FAIL] docker missing"
+command -v docker-compose >/dev/null && echo "[OK] docker-compose" || echo "[FAIL] docker-compose missing"
+command -v ansible >/dev/null && echo "[OK] ansible" || echo "[FAIL] ansible missing"
+docker ps | grep -q device1 && echo "[OK] device1 up" || echo "[FAIL] device1 down"
+docker ps | grep -q device2 && echo "[OK] device2 up" || echo "[FAIL] device2 down"
+docker ps | grep -q device3 && echo "[OK] device3 up" || echo "[FAIL] device3 down"
+nc -z localhost 2221 && echo "[OK] SSH 2221" || echo "[FAIL] SSH 2221"
+nc -z localhost 2222 && echo "[OK] SSH 2222" || echo "[FAIL] SSH 2222"
+nc -z localhost 2223 && echo "[OK] SSH 2223" || echo "[FAIL] SSH 2223"
