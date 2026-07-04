@@ -1,0 +1,9 @@
+---
+- import_playbook: test_connectivity.yml
+- import_playbook: configure_ip.yml
+- import_playbook: configure_user.yml
+- import_playbook: configure_banner.yml
+- import_playbook: configure_interface.yml
+- import_playbook: configure_route.yml
+- import_playbook: retrieve_device_info.yml
+- import_playbook: system_info.yml
