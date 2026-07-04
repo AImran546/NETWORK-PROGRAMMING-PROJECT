@@ -1,0 +1,21 @@
+---
+- name: Configure user account on devices
+  hosts: devices
+  become: yes
+  tasks:
+    - name: Create netadmin user
+      user:
+        name: netadmin
+        password: "{{ 'netadmin123' | password_hash('sha512') }}"
+        shell: /bin/bash
+        groups: sudo
+        append: yes
+        state: present
+
+    - name: Verify user created
+      shell: id netadmin
+      register: user_check
+
+    - name: Show user info
+      debug:
+        var: user_check.stdout

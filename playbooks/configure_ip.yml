@@ -1,0 +1,16 @@
+---
+- name: Configure IP address on devices
+  hosts: devices
+  become: yes
+  tasks:
+    - name: Add secondary IP to eth0
+      shell: ip addr add 172.20.0.{{ secondary_ip }}/24 dev eth0 || true
+      register: ip_result
+
+    - name: Show current IP config
+      shell: ip addr show eth0
+      register: ip_show
+
+    - name: Display IP info
+      debug:
+        var: ip_show.stdout_lines
