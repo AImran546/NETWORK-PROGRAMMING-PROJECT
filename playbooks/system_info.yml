@@ -1,0 +1,30 @@
+
+- name: Collect system info
+  hosts: devices
+  become: yes
+  gather_facts: yes
+  tasks:
+    - shell: hostname
+      register: h
+    - shell: date
+      register: d
+    - shell: lscpu | grep -E "Model name|CPU\(s\)|Architecture" | head -5
+      register: c
+    - shell: free -h
+      register: m
+    - shell: df -h
+      register: dk
+    - shell: who
+      register: u
+    - shell: ps aux --sort=-%cpu | head -6
+      register: t
+    - debug:
+        msg:
+          - "===== {{ inventory_hostname }} ====="
+          - "Host: {{ h.stdout }}"
+          - "Date: {{ d.stdout }}"
+          - "CPU: {{ c.stdout_lines }}"
+          - "Mem: {{ m.stdout_lines }}"
+          - "Disk: {{ dk.stdout_lines }}"
+          - "Users: {{ u.stdout_lines }}"
+          - "Top: {{ t.stdout_lines }}"
