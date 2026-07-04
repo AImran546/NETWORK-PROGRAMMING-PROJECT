@@ -1,0 +1,395 @@
+
+PLAY [Test connectivity] *******************************************************
+
+TASK [ping] ********************************************************************
+ok: [device2]
+ok: [device3]
+ok: [device1]
+
+TASK [shell] *******************************************************************
+changed: [device1]
+changed: [device2]
+changed: [device3]
+
+TASK [debug] *******************************************************************
+ok: [device1] => 
+  c.stdout: Connected to device1
+ok: [device2] => 
+  c.stdout: Connected to device2
+ok: [device3] => 
+  c.stdout: Connected to device3
+
+TASK [shell] *******************************************************************
+changed: [device1]
+changed: [device2]
+changed: [device3]
+
+TASK [debug] *******************************************************************
+ok: [device1] => 
+  u.stdout: ' 12:49:19 up 57 min,  0 users,  load average: 1.69, 0.72, 0.44'
+ok: [device2] => 
+  u.stdout: ' 12:49:19 up 57 min,  0 users,  load average: 1.69, 0.72, 0.44'
+ok: [device3] => 
+  u.stdout: ' 12:49:19 up 57 min,  0 users,  load average: 1.69, 0.72, 0.44'
+
+PLAY [Configure IP address on devices] *****************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [device3]
+ok: [device2]
+ok: [device1]
+
+TASK [Add secondary IP to eth0] ************************************************
+changed: [device1]
+changed: [device2]
+changed: [device3]
+
+TASK [Show current IP config] **************************************************
+changed: [device1]
+changed: [device2]
+changed: [device3]
+
+TASK [Display IP info] *********************************************************
+ok: [device1] => 
+  ip_show.stdout_lines:
+  - '8: eth0@if9: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP group default '
+  - '    link/ether 02:42:ac:12:00:03 brd ff:ff:ff:ff:ff:ff link-netnsid 0'
+  - '    inet 172.18.0.3/16 brd 172.18.255.255 scope global eth0'
+  - '       valid_lft forever preferred_lft forever'
+ok: [device2] => 
+  ip_show.stdout_lines:
+  - '10: eth0@if11: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP group default '
+  - '    link/ether 02:42:ac:12:00:04 brd ff:ff:ff:ff:ff:ff link-netnsid 0'
+  - '    inet 172.18.0.4/16 brd 172.18.255.255 scope global eth0'
+  - '       valid_lft forever preferred_lft forever'
+ok: [device3] => 
+  ip_show.stdout_lines:
+  - '6: eth0@if7: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP group default '
+  - '    link/ether 02:42:ac:12:00:02 brd ff:ff:ff:ff:ff:ff link-netnsid 0'
+  - '    inet 172.18.0.2/16 brd 172.18.255.255 scope global eth0'
+  - '       valid_lft forever preferred_lft forever'
+
+PLAY [Configure user account on devices] ***************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [device2]
+ok: [device1]
+ok: [device3]
+
+TASK [Create netadmin user] ****************************************************
+changed: [device2]
+changed: [device3]
+changed: [device1]
+
+TASK [Verify user created] *****************************************************
+changed: [device3]
+changed: [device1]
+changed: [device2]
+
+TASK [Show user info] **********************************************************
+ok: [device1] => 
+  user_check.stdout: uid=1001(netadmin) gid=1001(netadmin) groups=1001(netadmin),1002(sudo)
+ok: [device2] => 
+  user_check.stdout: uid=1001(netadmin) gid=1001(netadmin) groups=1001(netadmin),1002(sudo)
+ok: [device3] => 
+  user_check.stdout: uid=1001(netadmin) gid=1001(netadmin) groups=1001(netadmin),1002(sudo)
+
+PLAY [Configure banner message] ************************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [device3]
+ok: [device2]
+ok: [device1]
+
+TASK [Set MOTD banner] *********************************************************
+ok: [device1]
+ok: [device2]
+ok: [device3]
+
+TASK [Verify banner] ***********************************************************
+changed: [device1]
+changed: [device2]
+changed: [device3]
+
+TASK [Display banner] **********************************************************
+ok: [device1] => 
+  banner_check.stdout_lines:
+  - '***********************************************'
+  - '*  SECR3253 Network Automation Lab            *'
+  - '*  Authorized Access Only                     *'
+  - '*  All activities are monitored               *'
+  - '***********************************************'
+ok: [device2] => 
+  banner_check.stdout_lines:
+  - '***********************************************'
+  - '*  SECR3253 Network Automation Lab            *'
+  - '*  Authorized Access Only                     *'
+  - '*  All activities are monitored               *'
+  - '***********************************************'
+ok: [device3] => 
+  banner_check.stdout_lines:
+  - '***********************************************'
+  - '*  SECR3253 Network Automation Lab            *'
+  - '*  Authorized Access Only                     *'
+  - '*  All activities are monitored               *'
+  - '***********************************************'
+
+PLAY [Configure interface description] *****************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [device1]
+ok: [device3]
+ok: [device2]
+
+TASK [Write description file] **************************************************
+ok: [device3]
+ok: [device2]
+ok: [device1]
+
+TASK [Set interface alias] *****************************************************
+fatal: [device1]: FAILED! => changed=true 
+  cmd: ip link set eth0 alias "LabNet-Uplink"
+  delta: '0:00:00.010002'
+  end: '2026-07-04 12:49:37.454958'
+  msg: non-zero return code
+  rc: 2
+  start: '2026-07-04 12:49:37.444956'
+  stderr: 'RTNETLINK answers: Operation not permitted'
+  stderr_lines: <omitted>
+  stdout: ''
+  stdout_lines: <omitted>
+...ignoring
+fatal: [device2]: FAILED! => changed=true 
+  cmd: ip link set eth0 alias "LabNet-Uplink"
+  delta: '0:00:00.003346'
+  end: '2026-07-04 12:49:37.516918'
+  msg: non-zero return code
+  rc: 2
+  start: '2026-07-04 12:49:37.513572'
+  stderr: 'RTNETLINK answers: Operation not permitted'
+  stderr_lines: <omitted>
+  stdout: ''
+  stdout_lines: <omitted>
+...ignoring
+fatal: [device3]: FAILED! => changed=true 
+  cmd: ip link set eth0 alias "LabNet-Uplink"
+  delta: '0:00:00.004347'
+  end: '2026-07-04 12:49:37.533427'
+  msg: non-zero return code
+  rc: 2
+  start: '2026-07-04 12:49:37.529080'
+  stderr: 'RTNETLINK answers: Operation not permitted'
+  stderr_lines: <omitted>
+  stdout: ''
+  stdout_lines: <omitted>
+...ignoring
+
+TASK [Show] ********************************************************************
+changed: [device2]
+changed: [device3]
+changed: [device1]
+
+TASK [debug] *******************************************************************
+ok: [device1] => 
+  i.stdout_lines:
+  - 'Interface eth0 - LabNet Uplink 172.20.0.0/248: eth0@if9: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP mode DEFAULT group default '
+  - '    link/ether 02:42:ac:12:00:03 brd ff:ff:ff:ff:ff:ff link-netnsid 0'
+ok: [device2] => 
+  i.stdout_lines:
+  - 'Interface eth0 - LabNet Uplink 172.20.0.0/2410: eth0@if11: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP mode DEFAULT group default '
+  - '    link/ether 02:42:ac:12:00:04 brd ff:ff:ff:ff:ff:ff link-netnsid 0'
+ok: [device3] => 
+  i.stdout_lines:
+  - 'Interface eth0 - LabNet Uplink 172.20.0.0/246: eth0@if7: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP mode DEFAULT group default '
+  - '    link/ether 02:42:ac:12:00:02 brd ff:ff:ff:ff:ff:ff link-netnsid 0'
+
+PLAY [Configure static route] **************************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [device1]
+ok: [device3]
+ok: [device2]
+
+TASK [Add static route] ********************************************************
+changed: [device3]
+changed: [device1]
+changed: [device2]
+
+TASK [Show routes] *************************************************************
+changed: [device1]
+changed: [device2]
+changed: [device3]
+
+TASK [debug] *******************************************************************
+ok: [device1] => 
+  r.stdout_lines:
+  - 'default via 172.18.0.1 dev eth0 '
+  - '172.18.0.0/16 dev eth0 proto kernel scope link src 172.18.0.3 '
+ok: [device2] => 
+  r.stdout_lines:
+  - 'default via 172.18.0.1 dev eth0 '
+  - '172.18.0.0/16 dev eth0 proto kernel scope link src 172.18.0.4 '
+ok: [device3] => 
+  r.stdout_lines:
+  - 'default via 172.18.0.1 dev eth0 '
+  - '172.18.0.0/16 dev eth0 proto kernel scope link src 172.18.0.2 '
+
+PLAY [Retrieve device info] ****************************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [device2]
+ok: [device1]
+ok: [device3]
+
+TASK [debug] *******************************************************************
+ok: [device1] => 
+  ansible_hostname: 6181e3430273
+ok: [device2] => 
+  ansible_hostname: ab5bb15b2d85
+ok: [device3] => 
+  ansible_hostname: 541fde28878c
+
+TASK [debug] *******************************************************************
+ok: [device1] => 
+  ansible_distribution: Alpine
+ok: [device2] => 
+  ansible_distribution: Alpine
+ok: [device3] => 
+  ansible_distribution: Alpine
+
+TASK [debug] *******************************************************************
+ok: [device1] => 
+  ansible_kernel: 5.4.0-37-generic
+ok: [device2] => 
+  ansible_kernel: 5.4.0-37-generic
+ok: [device3] => 
+  ansible_kernel: 5.4.0-37-generic
+
+TASK [debug] *******************************************************************
+ok: [device1] => 
+  ansible_all_ipv4_addresses:
+  - 172.18.0.3
+ok: [device2] => 
+  ansible_all_ipv4_addresses:
+  - 172.18.0.4
+ok: [device3] => 
+  ansible_all_ipv4_addresses:
+  - 172.18.0.2
+
+TASK [shell] *******************************************************************
+changed: [device2]
+changed: [device3]
+changed: [device1]
+
+TASK [debug] *******************************************************************
+ok: [device1] => 
+  iface.stdout_lines:
+  - 'lo               UNKNOWN        127.0.0.1/8 '
+  - 'eth0@if9         UP             172.18.0.3/16 '
+ok: [device2] => 
+  iface.stdout_lines:
+  - 'lo               UNKNOWN        127.0.0.1/8 '
+  - 'eth0@if11        UP             172.18.0.4/16 '
+ok: [device3] => 
+  iface.stdout_lines:
+  - 'lo               UNKNOWN        127.0.0.1/8 '
+  - 'eth0@if7         UP             172.18.0.2/16 '
+
+TASK [shell] *******************************************************************
+changed: [device1]
+changed: [device2]
+changed: [device3]
+
+TASK [debug] *******************************************************************
+ok: [device1] => 
+  routes.stdout_lines:
+  - 'default via 172.18.0.1 dev eth0 '
+  - '172.18.0.0/16 dev eth0 proto kernel scope link src 172.18.0.3 '
+ok: [device2] => 
+  routes.stdout_lines:
+  - 'default via 172.18.0.1 dev eth0 '
+  - '172.18.0.0/16 dev eth0 proto kernel scope link src 172.18.0.4 '
+ok: [device3] => 
+  routes.stdout_lines:
+  - 'default via 172.18.0.1 dev eth0 '
+  - '172.18.0.0/16 dev eth0 proto kernel scope link src 172.18.0.2 '
+
+PLAY [Collect system info] *****************************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [device2]
+ok: [device1]
+ok: [device3]
+
+TASK [shell] *******************************************************************
+changed: [device2]
+changed: [device1]
+changed: [device3]
+
+TASK [shell] *******************************************************************
+changed: [device3]
+changed: [device2]
+changed: [device1]
+
+TASK [shell] *******************************************************************
+changed: [device1]
+changed: [device2]
+changed: [device3]
+
+TASK [shell] *******************************************************************
+changed: [device2]
+changed: [device3]
+changed: [device1]
+
+TASK [shell] *******************************************************************
+changed: [device3]
+changed: [device2]
+changed: [device1]
+
+TASK [shell] *******************************************************************
+changed: [device1]
+changed: [device3]
+changed: [device2]
+
+TASK [shell] *******************************************************************
+changed: [device2]
+changed: [device1]
+changed: [device3]
+
+TASK [debug] *******************************************************************
+ok: [device1] => 
+  msg:
+  - ===== device1 =====
+  - 'Host: 6181e3430273'
+  - 'Date: Sat Jul  4 12:49:47 UTC 2026'
+  - 'CPU: []'
+  - 'Mem: [''               total        used        free      shared  buff/cache   available'', ''Mem:           3.8Gi       963Mi       1.4Gi        25Mi       1.8Gi       2.9Gi'', ''Swap:          2.0Gi          0B       2.0Gi'']'
+  - 'Disk: [''Filesystem      Size  Used Avail Use% Mounted on'', ''overlay          31G   17G   12G  60% /'', ''tmpfs            64M     0   64M   0% /dev'', ''tmpfs           2.0G     0  2.0G   0% /sys/fs/cgroup'', ''/dev/sda5        31G   17G   12G  60% /config'', ''shm              64M     0   64M   0% /dev/shm'', ''tmpfs           2.0G     0  2.0G   0% /proc/acpi'', ''tmpfs           2.0G     0  2.0G   0% /proc/scsi'', ''tmpfs           2.0G     0  2.0G   0% /sys/firmware'']'
+  - 'Users: []'
+  - 'Top: [''USER         PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND'', ''root        1315 60.7  0.4  23684 19612 ?        S    12:49   0:00 /usr/bin/python3'', ''ansible      836  0.3  0.1   8280  5280 ?        S    12:48   0:00 sshd-session.pam: ansible@notty'', ''root           1  0.0  0.0    432   108 ?        Ss   12:23   0:00 /package/admin/s6/command/s6-svscan -d4 -- /run/service'', ''ansible      834  0.0  0.1   7452  5572 ?        Ss   12:48   0:00 sshd-session.pam: ansible [priv]'', ''ansible      198  0.0  0.1   6740  4800 ?        Ss   12:23   0:00 sshd.pam: /usr/sbin/sshd.pam -D -e -f /config/sshd/sshd_config -h /config/ssh_host_keys/ssh_host_ecdsa_key -h /config/ssh_host_keys/ssh_host_ed25519_key -h /config/ssh_host_keys/ssh_host_rsa_key [listener] 0 of 10-100 startups'']'
+ok: [device2] => 
+  msg:
+  - ===== device2 =====
+  - 'Host: ab5bb15b2d85'
+  - 'Date: Sat Jul  4 12:49:47 UTC 2026'
+  - 'CPU: []'
+  - 'Mem: [''               total        used        free      shared  buff/cache   available'', ''Mem:           3.8Gi       1.0Gi       1.3Gi        25Mi       1.8Gi       2.9Gi'', ''Swap:          2.0Gi          0B       2.0Gi'']'
+  - 'Disk: [''Filesystem      Size  Used Avail Use% Mounted on'', ''overlay          31G   17G   12G  60% /'', ''tmpfs            64M     0   64M   0% /dev'', ''tmpfs           2.0G     0  2.0G   0% /sys/fs/cgroup'', ''/dev/sda5        31G   17G   12G  60% /config'', ''shm              64M     0   64M   0% /dev/shm'', ''tmpfs           2.0G     0  2.0G   0% /proc/acpi'', ''tmpfs           2.0G     0  2.0G   0% /proc/scsi'', ''tmpfs           2.0G     0  2.0G   0% /sys/firmware'']'
+  - 'Users: []'
+  - 'Top: [''USER         PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND'', ''root        1315 80.0  0.4  23684 19472 ?        S    12:49   0:00 /usr/bin/python3'', ''ansible      836  0.3  0.1   8280  5316 ?        S    12:48   0:00 sshd-session.pam: ansible@notty'', ''ansible      834  0.0  0.1   7452  5460 ?        Ss   12:48   0:00 sshd-session.pam: ansible [priv]'', ''root           1  0.0  0.0    432   108 ?        Ss   12:23   0:00 /package/admin/s6/command/s6-svscan -d4 -- /run/service'', ''ansible      194  0.0  0.1   6740  4788 ?        Ss   12:23   0:00 sshd.pam: /usr/sbin/sshd.pam -D -e -f /config/sshd/sshd_config -h /config/ssh_host_keys/ssh_host_ecdsa_key -h /config/ssh_host_keys/ssh_host_ed25519_key -h /config/ssh_host_keys/ssh_host_rsa_key [listener] 0 of 10-100 startups'']'
+ok: [device3] => 
+  msg:
+  - ===== device3 =====
+  - 'Host: 541fde28878c'
+  - 'Date: Sat Jul  4 12:49:47 UTC 2026'
+  - 'CPU: []'
+  - 'Mem: [''               total        used        free      shared  buff/cache   available'', ''Mem:           3.8Gi       985Mi       1.3Gi        25Mi       1.8Gi       2.9Gi'', ''Swap:          2.0Gi          0B       2.0Gi'']'
+  - 'Disk: [''Filesystem      Size  Used Avail Use% Mounted on'', ''overlay          31G   17G   12G  60% /'', ''tmpfs            64M     0   64M   0% /dev'', ''tmpfs           2.0G     0  2.0G   0% /sys/fs/cgroup'', ''/dev/sda5        31G   17G   12G  60% /config'', ''shm              64M     0   64M   0% /dev/shm'', ''tmpfs           2.0G     0  2.0G   0% /proc/acpi'', ''tmpfs           2.0G     0  2.0G   0% /proc/scsi'', ''tmpfs           2.0G     0  2.0G   0% /sys/firmware'']'
+  - 'Users: []'
+  - 'Top: [''USER         PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND'', ''root        1322 55.9  0.4  23684 19720 ?        S    12:49   0:00 /usr/bin/python3'', ''ansible      843  0.3  0.1   8280  5344 ?        S    12:48   0:00 sshd-session.pam: ansible@notty'', ''root           1  0.0  0.0    428   104 ?        Ss   12:23   0:00 /package/admin/s6/command/s6-svscan -d4 -- /run/service'', ''ansible      841  0.0  0.1   7452  5476 ?        Ss   12:48   0:00 sshd-session.pam: ansible [priv]'', ''ansible      195  0.0  0.1   6740  4952 ?        Ss   12:23   0:00 sshd.pam: /usr/sbin/sshd.pam -D -e -f /config/sshd/sshd_config -h /config/ssh_host_keys/ssh_host_ecdsa_key -h /config/ssh_host_keys/ssh_host_ed25519_key -h /config/ssh_host_keys/ssh_host_rsa_key [listener] 0 of 10-100 startups'']'
+
+PLAY RECAP *********************************************************************
+device1                    : ok=44   changed=20   unreachable=0    failed=0    skipped=0    rescued=0    ignored=1   
+device2                    : ok=44   changed=20   unreachable=0    failed=0    skipped=0    rescued=0    ignored=1   
+device3                    : ok=44   changed=20   unreachable=0    failed=0    skipped=0    rescued=0    ignored=1   
+
